@@ -1,0 +1,171 @@
+---
+title: "p2_natlas_preprocess metadata sheet"
+author: "Mirela Balan"
+
+date: "26.Oct.2025"
+date-modified: "today"
+date-format: "DD.MMM.YYYY"
+
+execute: 
+  echo: true
+warning: false
+#message: false
+  
+from: markdown+emoji
+categories: [preprocess, metadata]
+toc: true
+toc-depth: 3
+#fig-dpi: 300
+format:
+  html:
+    embed-resources: true
+    df-print: kable
+    page-layout: full
+    #code-overflow: wrap
+    fig-width: 8
+    fig-height: 6
+code-line-numbers: true
+number-sections: true
+
+## to wrap output
+include-in-header:
+  - text: |
+      <style>
+      .cell-output-stdout code {
+        word-break: break-wor !important;    
+        white-space: pre-wrap !important;
+      }   
+      </style>
+---
+
+
+```{r}
+#| label: setup
+#| echo: false
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/time-chunk.html
+
+all_times <- list()  # store the time for each chunk
+                                                                                                                                                                                            
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- difftime(Sys.time(), now, units = "mins")
+      # return a character string to show the time
+      all_times[[options$label]] <<- res
+    }
+  }
+})
+)
+
+knitr::opts_chunk$set(
+  # don't use, has issues with a lot of symbols
+  # https://yihui.org/formatr/
+  # tidy = TRUE,
+  # cache.lazy = FALSE#,   # otherwise you get "Error in `lazyLoadDBinsertVariable()`: ! long vectors not supported yet: connections.c:6093"
+  time_it = TRUE
+)
+
+#to crop the empty white space around the pdf plots
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+
+```{r}
+#| label: libraries_no_renv
+#| output: false
+
+## conda env: ../envs/01_preprocess_xlsx_env
+
+# if (!"BiocManager" %in% installed.packages())
+#   install.packages("BiocManager")
+
+x <- c("readODS", "tidyverse", "magrittr")
+#BiocManager::install(x)
+
+## Load libraries
+invisible(lapply(x, library, character.only = TRUE))
+
+source("../codebase/functions/helper_functions.R")
+set.seed(42)
+#---------
+
+tstamp <- format(Sys.time(), '%Y-%m-%d-%H%M')
+tstamp
+
+start_time <- Sys.time()
+start_time
+```
+
+
+This script exports the metadata from the "ods" format and saves it normalized.
+
+
+```{r}
+#| label: locations
+#| output: false
+
+## input
+in_orig <- "../annotations/1_raw/PublicScRNAseqData.ods"
+load_sheet = "Sheet1"
+```
+
+
+```{r}
+#| label: load_file
+
+meta <- readODS::read_ods(in_orig, 
+                          sheet = load_sheet,
+                          col_names = T,
+                          row_names = F,
+                          na = "",
+                          as_tibble = F,
+                          trim_ws = T,
+                          ods_format = "ods",
+                          n_max = 83)
+
+head(meta)
+dim(meta)
+
+## make necessary cols factorial                                                                                                 
+colnames(meta) <- colnames(meta) %>%
+  tolower()
+
+meta <- meta %>%
+  mutate(across(c(dataset, pubmedid, skincompartment, experimentalbatch, singlecellmethod, sex, indication, biopsysite), as.factor)) %T>%
+  {head(.) %>% print(.)}
+
+
+## get levels of all factorial columns
+meta <- meta %>%
+  mutate(across(where(is.factor), droplevels ) )
+
+## get levels of all factorial columns
+meta %>%
+  select(where(is.factor)) %>%
+  sapply(levels)
+
+## export the data
+write.csv(x = meta,
+          file = "../annotations/2_export/2025.10.26_public_scrnaseq_data.csv",
+          quote = F,
+          row.names = F)
+```
+
+
+```{r}
+#| label: save_times
+
+t(as.data.frame(all_times))
+# write.csv(x = t(as.data.frame(all_times)), file = "../output/timings/dim_reduction_vignette_times.csv")
+```
+
+```{r}
+#| label: sessionInfo
+sessionInfo()
+```

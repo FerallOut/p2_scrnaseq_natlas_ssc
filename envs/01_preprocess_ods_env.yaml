@@ -1,0 +1,13 @@
+name: preprocess_ods_kable 
+channels:
+  - conda-forge
+  - bioconda
+  - r
+dependencies:
+  - r-base
+  - r-essentials
+  - quarto
+  - r-readods
+  - r-tidyverse
+  - r-magrittr 
+  - r-kableextra
