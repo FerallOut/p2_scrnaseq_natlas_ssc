@@ -132,26 +132,48 @@ meta <- readODS::read_ods(in_orig,
 head(meta)
 dim(meta)
 
-## make necessary cols factorial                                                                                                 
 colnames(meta) <- colnames(meta) %>%
-  tolower()
+  tolower() 
 
-meta <- meta %>%
-  mutate(across(c(dataset, pubmedid, skincompartment, experimentalbatch, singlecellmethod, sex, indication, biopsysite), as.factor)) %T>%
+## add paper names
+counts_ref <- meta %>% 
+  group_by(dataset) %>% 
+  count(dataset, name = "nr_samples_in_dataset") %>% 
+  ungroup() %>% 
+  mutate(ref = c("Lafyatis", NA, "Gudjonsson", "Denton"))
+
+head(counts_ref)
+
+meta_fin <- left_join(meta, counts_ref, by="dataset")
+head(meta_fin)
+```
+
+
+```{r}
+#|label: process_file
+
+## make necessary cols factorial
+meta_fin <- meta_fin %>%
+  mutate(across(c(dataset, pubmedid, skincompartment, experimentalbatch, singlecellmethod, sex, indication, biopsysite, nr_samples_in_dataset, ref), as.factor)) %>% 
+  rename(pubmed_id = pubmedid, 
+         skin_compartment = skincompartment, 
+         experimental_batch = experimentalbatch,
+         singlecell_method = singlecellmethod,
+         biopsy_site = biopsysite) %T>%
   {head(.) %>% print(.)}
 
 
 ## get levels of all factorial columns
-meta <- meta %>%
+meta_fin <- meta_fin %>%
   mutate(across(where(is.factor), droplevels ) )
 
 ## get levels of all factorial columns
-meta %>%
+meta_fin %>%
   select(where(is.factor)) %>%
   sapply(levels)
 
 ## export the data
-write.csv(x = meta,
+write.csv(x = meta_fin,
           file = "../annotations/2_export/2025.10.26_public_scrnaseq_data.csv",
           quote = F,
           row.names = F)
