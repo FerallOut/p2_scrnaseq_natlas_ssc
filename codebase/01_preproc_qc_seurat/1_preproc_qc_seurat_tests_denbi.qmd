@@ -283,206 +283,6 @@ seu_merge_unfilt@meta.data %>%
 
 ## unfiltered plots
 
-### cell count
-
-```{r}
-#|label: explore_data
-
-## Cells sequenced per sample
-table(seu_merge_unfilt@meta.data$abrev_name)
-
-## get counts before filtering
-cell_counts <- seu_merge_unfilt@meta.data %>%
-  group_by(abrev_name) %>%
-  dplyr::count(abrev_name, name = "cell_count") %>%
-  ungroup()
-
-## split barcharts
-p <- seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x = abrev_name)) +
-  geom_bar() +
-  ggbreak::scale_y_break(breaks=c(12000, 30000)) +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  #scale_fill_manual(values = c("#F4BE85",  "#B2D1E8")) +
-  #scale_fill_brewer(palette = "Spectral") +
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.text = element_text(angle = 23)) +
-  ggtitle("Number of sequenced cells") +
-  geom_hline(data = cell_counts,
-             aes(yintercept = min(cell_count) ),
-             linetype="dashed",
-             color = "black"#,
-             #size=2
-             )
- ggsave(filename = paste0(output_dirs[2],
-                            "01_cell_counts_per_sample_",
-                            tstamp,
-                            ".png"),
-          plot = p,
-          height = 7,
-          width = 20)
-```
-
-
-
-### nCount
-
-```{r}
-#| label: nCount_unfilt
-
-p <- seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
-  geom_density(alpha = 0.2) +
-  scale_x_log10() +
-  coord_cartesian(xlim = c(100, 200000)) +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  theme(plot.title = element_text(hjust = 0.5)#, 
-        #legend.position="none"
-        ) +
-  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
-  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
-
-  geom_vline(xintercept = 50000, colour = 'red3') +
-  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
-  xlab("nUMIs/nCount per cell") +
-  ylab("Cell density") +
-  labs(title = "Number of sequenced molecules per cell, log base 10")
-
-
-ggsave(filename = paste0(output_dirs[2], "02_histogram_nCount_unfilt.pdf"),
-       plot = p,
-       device = "pdf",
-       height = 8,
-       width = 16)
-#-------------------------------------
-
-p <- seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x = nCount_RNA, y = abrev_name, fill = abrev_name)) +
-  geom_density_ridges() +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  theme(plot.title = element_text(hjust = 0.5),
-        legend.position="none"
-          ) +
-  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
-  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
-
-  geom_vline(xintercept = 50000, colour = 'red3') +
-  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
-  
-  scale_x_log10() +
-  xlab("nUMIs/nCount per cell") +
-  ylab("Cell density") +
-  labs(title = "Number of sequenced molecules per cell, log base 10")
-
-ggsave(filename = paste0(output_dirs[2], "02_ridgeplot_nCount_unfilt.pdf"),
-       plot = p,
-       device = "pdf",
-       height = 16,
-       width = 16)
-```
-
-
-### nFeature
-
-```{r}
-#| label: nFeature_unfilt
-
-p <- seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x = nFeature_RNA, color = abrev_name, fill = abrev_name)) +
-  geom_density(alpha = 0.2) +
-  scale_x_log10() +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  theme(plot.title = element_text(hjust = 0.5)#, 
-        #legend.position="none"
-        ) +
-  geom_vline(xintercept = 200, color ="red") +
-  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
-  xlab("nGenes (nFeature) per cell") +
-  ylab("Cell density") +
-  labs(title = "Number of genes per cell, log base 10")
-
-ggsave(filename = paste0(output_dirs[2], "03_histogram_nFeature_unfilt.pdf"),
-       plot = p,
-       device = "pdf",
-       height = 8,
-       width = 16)
-#--------------------------
-
-p <- seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x = nFeature_RNA, y = abrev_name, fill = abrev_name)) +
-  geom_density_ridges() +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  theme(plot.title = element_text(hjust = 0.5),
-        legend.position="none"
-          ) +
-  geom_vline(xintercept = 200, color ="red") +
-  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
-  
-  scale_x_log10() +
-  xlab("nGenes (nFeature) per cell") +
-  ylab("Cell density") +
-  labs(title = "Number of genes per cell, log base 10")
-
-ggsave(filename = paste0(output_dirs[2], "02_ridgeplot_nFeature_unfilt.pdf"),
-       plot = p,
-       device = "pdf",
-       height = 16,
-       width = 16)
-```
-
-
-### complexity
-
-```{r}
-#| label: sample_complexity
-
-seu_merge_unfilt[["log10GenesPerUMI"]] <- log10(seu_merge_unfilt$nFeature_RNA) / log10(seu_merge_unfilt$nCount_RNA)
-
-seu_merge_unfilt@meta.data %>%
-  ggplot(aes(x=log10GenesPerUMI, color = abrev_name, fill=abrev_name)) +
-    geom_density(alpha = 0.2) +
-  ggpubr::theme_pubclean()+
-  ggpubr::labs_pubr()+
-  #scale_fill_manual(values = c("#F4BE85", "#F1CE75", "#B2D1E8", "#E0EEEE", "#5F9EA0")) +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  facet_grid(genotype ~ .) +
-  geom_vline(xintercept = 0.8, linetype = "dotdash", color ="grey") +
-  xlab("Novelty score per cell (log10(Feature_RNA) / log10(nCount_RNA))") +
-  labs(title = "Cell complexity")
-
-
-
-
-
-```
-
-
-
-```{r}
-#| label: vlnPlots_unfiltered_complexity
-
-
-fp3.violinplot(seu_merge_unfilt, 
-               to_plot = "log10GenesPerUMI",
-               to_group = "abrev_name", 
-               to_split = "abrev_name", 
-               log_switch = F,
-               diam = 0,
-               str_plt_nr = "02_",
-               str_subtitle = "VlnPlot_complexity_unfilt_") +
-  geom_hline(yintercept = .75, color = 'red3')
-```
-
-
-
-
-
-
 
 ```{r}
 #| label: vlnPlots_unfiltered
@@ -546,7 +346,192 @@ lapply(c("nFeature_RNA", "nCount_RNA", "percent.mt"),
 ```
 
 
+### cell count
 
+```{r}
+#|label: explore_data
+
+## Cells sequenced per sample
+table(seu_merge_unfilt@meta.data$abrev_name)
+
+## get counts before filtering
+cell_counts_unfilt <- seu_merge_unfilt@meta.data %>%
+  group_by(abrev_name) %>%
+  dplyr::count(abrev_name, name = "cell_count_unfilt") %>%
+  ungroup() 
+
+## split barcharts
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = abrev_name)) +
+  geom_bar() +
+  ggbreak::scale_y_break(breaks=c(12000, 30000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(angle = 23)) +
+  ggtitle("Number of sequenced cells") +
+  geom_hline(data = cell_counts_unfilt,
+             aes(yintercept = min(cell_count_unfilt) ),
+             linetype="dashed",
+             color = "black"#,
+             #size=2
+             )
+ ggsave(filename = paste0(output_dirs[2],
+                            "02_cell_counts_unfilt_per_sample_",
+                            tstamp,
+                            ".png"),
+          plot = p,
+          height = 7,
+          width = 20)
+```
+
+
+
+### nCount
+
+```{r}
+#| label: nCount_unfilt
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  coord_cartesian(xlim = c(100, 200000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+
+ggsave(filename = paste0(output_dirs[2], "03_histogram_nCount_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+#-------------------------------------
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "03_ridgeplot_nCount_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### nFeature
+
+```{r}
+#| label: nFeature_unfilt
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "04_histogram_nFeature_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+#--------------------------
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "04_ridgeplot_nFeature_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### complexity
+
+```{r}
+#| label: sample_complexity
+
+seu_merge_unfilt[["log10GenesPerUMI"]] <- log10(seu_merge_unfilt$nFeature_RNA) / log10(seu_merge_unfilt$nCount_RNA)
+
+seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x=log10GenesPerUMI, color = abrev_name, fill=abrev_name)) +
+    geom_density(alpha = 0.2) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  #scale_fill_manual(values = c("#F4BE85", "#F1CE75", "#B2D1E8", "#E0EEEE", "#5F9EA0")) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_grid(ref ~ .) +
+  geom_vline(xintercept = 0.8, linetype = "dotdash", color ="grey") +
+  xlab("Novelty score per cell (log10(Feature_RNA) / log10(nCount_RNA))") +
+  labs(title = "Cell complexity")
+
+ggsave(filename = paste0(output_dirs[2], "05_ridgeplot_sampleComplexity_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+
+fp3.violinplot(seu_merge_unfilt, 
+               to_plot = "log10GenesPerUMI",
+               to_group = "abrev_name", 
+               to_split = "abrev_name", 
+               log_switch = F,
+               diam = 0,
+               str_plt_nr = "05_",
+               str_subtitle = "VlnPlot_sampleComplexity_unfilt_") +
+  geom_hline(yintercept = .75, color = 'red3')
+```
 
 
 
@@ -573,6 +558,7 @@ seu_merge_filt <- subset(seu_merge_unfilt,
                            percent.mt < 20 & 
                            log10GenesPerUMI > .75)
 
+
 # Size of objects after first filtering
 print(paste0("post-filt1: ", dim(seu_merge_filt)[1], " genes/features & ", dim(seu_merge_filt)[2], " cells"))
 
@@ -584,21 +570,204 @@ gc()
 ## filtered plots
 
 ```{r}
-#| label: vlnPlots_filtered
+#|label: vlnPlots_filtered
 
-fp3.violinplot(seu_merge_filt, 
-               to_group = "abrev_name", 
-               to_split = "abrev_name", 
-               log_switch = T,
-               diam = 0,
-               str_plt_nr = "03_",
-               str_subtitle = "VlnPlot_features_counts_mt_filt_")
+lapply(c("nFeature_RNA", "nCount_RNA", "percent.mt"), 
+       function(X) fp3.violinplot(seu_merge_filt, 
+                                  to_plot = X,
+                                  to_group = "abrev_name", 
+                                  to_split = "abrev_name", 
+                                  log_switch = T,
+                                  diam = 0,
+                                  str_plt_nr = "06_",  # which(x %in% c(2,4))
+                                  str_subtitle = paste0("VlnPlot_features_counts_mt_filt_", X),
+                                  out_dir = output_dirs[2]
+                                  ) )
 ```
 
-```{r}
-#| label: vlnPlots_filtered_complexity
 
-seu_merge_filt[['log10GenesPerUMI']] <- log10(seu_merge_filt[['nFeature_RNA']]) / log10(seu_merge_filt[['nCount_RNA']])
+### cell count
+
+```{r}
+#|label: explore_data_filt
+
+## Cells sequenced per sample
+table(seu_merge_filt@meta.data$abrev_name)
+
+## get counts before filtering
+cell_counts_filt <- seu_merge_filt@meta.data %>%
+  group_by(abrev_name) %>%
+  dplyr::count(abrev_name, name = "cell_count_filt") %>%
+  ungroup() 
+
+
+## split barcharts
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = abrev_name)) +
+  geom_bar() +
+  ggbreak::scale_y_break(breaks=c(12000, 30000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(angle = 23)) +
+  ggtitle("Number of sequenced cells") +
+  geom_hline(data = cell_counts_filt,
+             aes(yintercept = min(cell_count_filt) ),
+             linetype="dashed",
+             color = "black"#,
+             #size=2
+             )
+ ggsave(filename = paste0(output_dirs[2],
+                            "07_cell_counts_per_sample_",
+                            tstamp,
+                            ".png"),
+          plot = p,
+          height = 7,
+          width = 20)
+ 
+qc_filter <- inner_join(cell_counts_unfilt, cell_counts_filt, 
+                        by = c("abrev_name")) %>%
+  mutate(filtered_out = cell_count_unfilt - cell_count_filt,
+         percent.lost_cells = (100 * (filtered_out)/ cell_count_unfilt) %>% round(2))
+
+qc_filter
+```
+
+
+
+### nCount
+
+```{r}
+#| label: nCount_filt
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  coord_cartesian(xlim = c(100, 200000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+
+ggsave(filename = paste0(output_dirs[2], "08_histogram_nCount_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+#-------------------------------------
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "08_ridgeplot_nCount_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### nFeature
+
+```{r}
+#| label: nFeature_filt
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "09_histogram_nFeature_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+#--------------------------
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "09_ridgeplot_nFeature_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### complexity
+
+```{r}
+#| label: sample_complexity_filt
+
+seu_merge_filt[["log10GenesPerUMI"]] <- log10(seu_merge_filt$nFeature_RNA) / log10(seu_merge_filt$nCount_RNA)
+
+seu_merge_filt@meta.data %>%
+  ggplot(aes(x=log10GenesPerUMI, color = abrev_name, fill=abrev_name)) +
+    geom_density(alpha = 0.2) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  facet_grid(ref ~ .) +
+  geom_vline(xintercept = 0.8, linetype = "dotdash", color ="grey") +
+  xlab("Novelty score per cell (log10(Feature_RNA) / log10(nCount_RNA))") +
+  labs(title = "Cell complexity")
+
+ggsave(filename = paste0(output_dirs[2], "10_ridgeplot_sampleComplexity_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
 
 fp3.violinplot(seu_merge_filt, 
                to_plot = "log10GenesPerUMI",
@@ -606,42 +775,12 @@ fp3.violinplot(seu_merge_filt,
                to_split = "abrev_name", 
                log_switch = F,
                diam = 0,
-               str_plt_nr = "04_",
-               str_subtitle = "VlnPlot_features_counts_mt_filt_") +
+               str_plt_nr = "10_",
+               str_subtitle = "VlnPlot_sampleComplexity_unfilt_") +
   geom_hline(yintercept = .75, color = 'red3')
 ```
 
 
-```{r}
-#|label: histograms_thresholds_after_filter
-
-s <- seu_merge_filt[[]] %>% 
-  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
-  geom_density(alpha = .2) +
-  scale_x_log10() +
-  theme_classic() +
-
-
-ggsave(filename = paste0(output_dirs[2], "histogram_nCount_filt.pdf"),                                                                                    
-       plot = s,
-       device = "pdf",
-       height = 8,
-       width = 16)
-
-
-t <- seu_merge_filt[[]] %>% 
-  ggplot(aes(color = abrev_name, x = nFeature_RNA, fill = abrev_name)) +
-  geom_density(alpha = .2) +
-  scale_x_log10() +
-  theme_classic() +
-  geom_vline(xintercept = 200, colour = 'red3')
-
-ggsave(filename = paste0(output_dirs[2], "histogram_nFeature_filt.pdf"),                                                                                    
-       plot = t,
-       device = "pdf",
-       height = 8,
-       width = 16)
-```
 
 ## doublet removal
   
