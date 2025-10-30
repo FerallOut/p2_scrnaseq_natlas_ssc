@@ -105,6 +105,10 @@ start_time
 
 This script exports the metadata from the "ods" format and saves it normalized.
 
+3 patient ids have only dermis samples, not epidermis, unlike all the others: 
+SCD-1908204 - GSM7932779 - GSE249279 - 38172207 - Dermis - Gudjonsson 
+SCD-1908205 - GSM7932780 - GSE249279 - 38172207 - Dermis - Gudjonsson 
+SCD-1909116 - GSM7932781 - GSE249279 - 38172207 - Dermis - Gudjonsson 
 
 ```{r}
 #| label: locations
