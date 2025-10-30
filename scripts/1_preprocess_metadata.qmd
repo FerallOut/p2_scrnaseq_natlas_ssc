@@ -167,6 +167,7 @@ meta_fin <- meta_fin %>%
          sample_accession = sampleaccession,
          patient_id = patientid,
          disease_duration_years = diseaseduration_years,
+         sample_id = sampleid,
          immunosuppressant_medication_at_biopsy = immunosuppressantmedicationatbiopsy) %T>%
   {head(.) %>% print(.)}
 

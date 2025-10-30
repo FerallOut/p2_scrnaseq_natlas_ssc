@@ -1,4 +1,4 @@
-sampleid,sample_accession,dataset,pubmed_id,skin_compartment,experimental_batch,singlecell_method,patient_id,sex,indication,biopsy_site,mrss,disease_duration_years,immunosuppressant_medication_at_biopsy,nr_samples_in_dataset,ref
+sample_id,sample_accession,dataset,pubmed_id,skin_compartment,experimental_batch,singlecell_method,patient_id,sex,indication,biopsy_site,mrss,disease_duration_years,immunosuppressant_medication_at_biopsy,nr_samples_in_dataset,ref
 SC1,GSM4115868,GSE138669,34282151,Epidermis and dermis,NA,10x 3’ SingelCell  v1,SC1,Male,control,forearm,NA,NA,NA,22,Lafyatis
 SC4,GSM4115870,GSE138669,34282151,Epidermis and dermis,NA,10x 3’ SingelCell  v1,SC4,Male,control,forearm,NA,NA,NA,22,Lafyatis
 SC18,GSM4115872,GSE138669,34282151,Epidermis and dermis,NA,10x 3’ SingelCell  v1,SC18,Female,control,forearm,NA,NA,NA,22,Lafyatis
