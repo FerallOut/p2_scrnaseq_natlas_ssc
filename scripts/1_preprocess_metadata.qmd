@@ -159,7 +159,11 @@ meta_fin <- meta_fin %>%
          skin_compartment = skincompartment, 
          experimental_batch = experimentalbatch,
          singlecell_method = singlecellmethod,
-         biopsy_site = biopsysite) %T>%
+         biopsy_site = biopsysite,
+         sample_accession = sampleaccession,
+         patient_id = patientid,
+         disease_duration_years = diseaseduration_years,
+         immunosuppressant_medication_at_biopsy = immunosuppressantmedicationatbiopsy) %T>%
   {head(.) %>% print(.)}
 
 

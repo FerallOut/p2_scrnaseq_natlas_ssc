@@ -2650,37 +2650,41 @@ white-space: pre-wrap !important;
 <span id="cb8-7"><a href="#cb8-7"></a>         <span class="at">skin_compartment =</span> skincompartment, </span>
 <span id="cb8-8"><a href="#cb8-8"></a>         <span class="at">experimental_batch =</span> experimentalbatch,</span>
 <span id="cb8-9"><a href="#cb8-9"></a>         <span class="at">singlecell_method =</span> singlecellmethod,</span>
-<span id="cb8-10"><a href="#cb8-10"></a>         <span class="at">biopsy_site =</span> biopsysite) <span class="sc">%T&gt;%</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a>  {<span class="fu">head</span>(.) <span class="sc">%&gt;%</span> <span class="fu">print</span>(.)}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-10"><a href="#cb8-10"></a>         <span class="at">biopsy_site =</span> biopsysite,</span>
+<span id="cb8-11"><a href="#cb8-11"></a>         <span class="at">sample_accession =</span> sampleaccession,</span>
+<span id="cb8-12"><a href="#cb8-12"></a>         <span class="at">patient_id =</span> patientid,</span>
+<span id="cb8-13"><a href="#cb8-13"></a>         <span class="at">disease_duration_years =</span> diseaseduration_years,</span>
+<span id="cb8-14"><a href="#cb8-14"></a>         <span class="at">immunosuppressant_medication_at_biopsy =</span> immunosuppressantmedicationatbiopsy) <span class="sc">%T&gt;%</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>  {<span class="fu">head</span>(.) <span class="sc">%&gt;%</span> <span class="fu">print</span>(.)}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  sampleid sampleaccession   dataset pubmed_id     skin_compartment
-1      SC1      GSM4115868 GSE138669  34282151 Epidermis and dermis
-2      SC4      GSM4115870 GSE138669  34282151 Epidermis and dermis
-3     SC18      GSM4115872 GSE138669  34282151 Epidermis and dermis
-4     SC32      GSM4115874 GSE138669  34282151 Epidermis and dermis
-5     SC33      GSM4115875 GSE138669  34282151 Epidermis and dermis
-6     SC34      GSM4115876 GSE138669  34282151 Epidermis and dermis
-  experimental_batch     singlecell_method patientid    sex indication
-1               &lt;NA&gt; 10x 3’ SingelCell  v1       SC1   Male    control
-2               &lt;NA&gt; 10x 3’ SingelCell  v1       SC4   Male    control
-3               &lt;NA&gt; 10x 3’ SingelCell  v1      SC18 Female    control
-4               &lt;NA&gt; 10x 3’ SingelCell  v1      SC32 Female    control
-5               &lt;NA&gt; 10x 3’ SingelCell  v1      SC33 Female    control
-6               &lt;NA&gt; 10x 3’ SingelCell  v1      SC34   Male    control
-  biopsy_site mrss diseaseduration_years immunosuppressantmedicationatbiopsy
-1     forearm   NA                    NA                                &lt;NA&gt;
-2     forearm   NA                    NA                                &lt;NA&gt;
-3     forearm   NA                    NA                                &lt;NA&gt;
-4     forearm   NA                    NA                                &lt;NA&gt;
-5     forearm   NA                    NA                                &lt;NA&gt;
-6     forearm   NA                    NA                                &lt;NA&gt;
-  nr_samples_in_dataset      ref
-1                    22 Lafyatis
-2                    22 Lafyatis
-3                    22 Lafyatis
-4                    22 Lafyatis
-5                    22 Lafyatis
-6                    22 Lafyatis</code></pre>
+<pre><code>  sampleid sample_accession   dataset pubmed_id     skin_compartment
+1      SC1       GSM4115868 GSE138669  34282151 Epidermis and dermis
+2      SC4       GSM4115870 GSE138669  34282151 Epidermis and dermis
+3     SC18       GSM4115872 GSE138669  34282151 Epidermis and dermis
+4     SC32       GSM4115874 GSE138669  34282151 Epidermis and dermis
+5     SC33       GSM4115875 GSE138669  34282151 Epidermis and dermis
+6     SC34       GSM4115876 GSE138669  34282151 Epidermis and dermis
+  experimental_batch     singlecell_method patient_id    sex indication
+1               &lt;NA&gt; 10x 3’ SingelCell  v1        SC1   Male    control
+2               &lt;NA&gt; 10x 3’ SingelCell  v1        SC4   Male    control
+3               &lt;NA&gt; 10x 3’ SingelCell  v1       SC18 Female    control
+4               &lt;NA&gt; 10x 3’ SingelCell  v1       SC32 Female    control
+5               &lt;NA&gt; 10x 3’ SingelCell  v1       SC33 Female    control
+6               &lt;NA&gt; 10x 3’ SingelCell  v1       SC34   Male    control
+  biopsy_site mrss disease_duration_years
+1     forearm   NA                     NA
+2     forearm   NA                     NA
+3     forearm   NA                     NA
+4     forearm   NA                     NA
+5     forearm   NA                     NA
+6     forearm   NA                     NA
+  immunosuppressant_medication_at_biopsy nr_samples_in_dataset      ref
+1                                   &lt;NA&gt;                    22 Lafyatis
+2                                   &lt;NA&gt;                    22 Lafyatis
+3                                   &lt;NA&gt;                    22 Lafyatis
+4                                   &lt;NA&gt;                    22 Lafyatis
+5                                   &lt;NA&gt;                    22 Lafyatis
+6                                   &lt;NA&gt;                    22 Lafyatis</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="do">## get levels of all factorial columns</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>meta_fin <span class="ot">&lt;-</span> meta_fin <span class="sc">%&gt;%</span></span>
@@ -2733,10 +2737,10 @@ $ref
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">t</span>(<span class="fu">as.data.frame</span>(all_times))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  [,1]               
-libraries_no_renv &quot;0.0115737 mins&quot;   
-locations         &quot;0.0004889131 mins&quot;
-load_file         &quot;0.001032476 mins&quot; 
-unnamed.chunk.1   &quot;0.0002869527 mins&quot;</code></pre>
+libraries_no_renv &quot;0.01207502 mins&quot;  
+locations         &quot;0.0004491647 mins&quot;
+load_file         &quot;0.00104171 mins&quot;  
+unnamed.chunk.1   &quot;0.0002817074 mins&quot;</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># write.csv(x = t(as.data.frame(all_times)), file = &quot;../output/timings/dim_reduction_vignette_times.csv&quot;)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
