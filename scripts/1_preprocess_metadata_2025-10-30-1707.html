@@ -2278,6 +2278,7 @@ white-space: pre-wrap !important;
 <span id="cb1-20"><a href="#cb1-20"></a>start_time</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This script exports the metadata from the “ods” format and saves it normalized.</p>
+<p>3 patient ids have only dermis samples, not epidermis, unlike all the others: SCD-1908204 - GSM7932779 - GSE249279 - 38172207 - Dermis - Gudjonsson SCD-1908205 - GSM7932780 - GSE249279 - 38172207 - Dermis - Gudjonsson SCD-1909116 - GSM7932781 - GSE249279 - 38172207 - Dermis - Gudjonsson</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="do">## input</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>in_orig <span class="ot">&lt;-</span> <span class="st">&quot;../annotations/1_raw/PublicScRNAseqData.ods&quot;</span></span>
@@ -2737,10 +2738,10 @@ $ref
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">t</span>(<span class="fu">as.data.frame</span>(all_times))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  [,1]               
-libraries_no_renv &quot;0.01207502 mins&quot;  
-locations         &quot;0.0004491647 mins&quot;
-load_file         &quot;0.00104171 mins&quot;  
-unnamed.chunk.1   &quot;0.0002817074 mins&quot;</code></pre>
+libraries_no_renv &quot;0.01129967 mins&quot;  
+locations         &quot;0.0004442175 mins&quot;
+load_file         &quot;0.001028482 mins&quot; 
+unnamed.chunk.1   &quot;0.000280571 mins&quot; </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># write.csv(x = t(as.data.frame(all_times)), file = &quot;../output/timings/dim_reduction_vignette_times.csv&quot;)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
