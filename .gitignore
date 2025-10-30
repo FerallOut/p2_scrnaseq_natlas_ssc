@@ -1,7 +1,12 @@
 # -ignore all env subdirectories in the env directory
-envs/*/ 
+envs/*/
+envs/*.tar.gz
+
 *.Rproj
 
+## glob pattern, not REGEX!
+## to find the error and output logs from hilbert
+**/*.[e,o][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
 
 .Rproj.user
 .Rhistory
