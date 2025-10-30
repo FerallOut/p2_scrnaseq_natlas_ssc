@@ -15,4 +15,6 @@ dependencies:
   - r-pheatmap
   - r-cowplot
   - r-ggpubr
+  - r-ggbreak   # insert breaks into axes
+  - r-ggridges  # ridge plots
   - r-patchwork
