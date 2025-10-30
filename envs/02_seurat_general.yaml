@@ -1,0 +1,14 @@
+name: general_seurat                                                                                                                        
+
+dependencies:
+  - r-base
+  - r-essentials
+  - quarto
+  - r-tidyverse
+  - r-magrittr
+  - r-presto # speed up FindMarkers
+  - r-magick # saving images
+  - r-pheatmap
+  - r-cowplot
+  - r-ggpubr
+  - r-patchwork
