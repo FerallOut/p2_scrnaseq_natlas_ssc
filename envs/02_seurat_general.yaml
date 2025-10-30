@@ -5,6 +5,10 @@ dependencies:
   - r-essentials
   - quarto
   - r-tidyverse
+  - r-seurat
+  - bioconductor-scater
+  - bioconductor-scdblfinder
+  - bioconductor-biocparallel
   - r-magrittr
   - r-presto # speed up FindMarkers
   - r-magick # saving images

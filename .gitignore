@@ -1,5 +1,7 @@
 # -ignore all env subdirectories in the env directory
 envs/*/ 
+*.Rproj
+
 
 .Rproj.user
 .Rhistory
