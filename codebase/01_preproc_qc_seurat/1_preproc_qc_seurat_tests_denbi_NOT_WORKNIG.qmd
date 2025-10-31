@@ -1,0 +1,937 @@
+---
+title: "p2_natlas: qc and preprocessing - 10x nucscRNAseq for Skin - tests"
+author: "Mirela Balan"
+
+date: "27.Oct.2025"
+date-modified: "today"
+date-format: "DD.MMM.YYYY"
+
+execute:
+  echo: true
+warning: false
+#message: false
+
+from: markdown+emoji
+categories: [references, organization]
+toc: true
+toc-depth: 3
+#fig-dpi: 300
+format:
+  html:
+    embed-resources: true
+    df-print: kable
+    page-layout: full
+    #code-overflow: wrap
+    fig-width: 8
+    fig-height: 6
+code-line-numbers: true
+number-sections: true
+
+include-in-header:
+  - text: |
+      <style>
+      .cell-output-stdout code {
+        word-break: break-wor !important;
+        white-space: pre-wrap !important;
+      }
+      </style>
+---
+
+
+```{r}
+#| label: setup
+#| echo: false
+
+# https://bookdown.org/yihui/rmarkdown-cookbook/time-chunk.html
+
+all_times <- list()  # store the time for each chunk
+                                                                                                                                                                                            
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      # record the current time before each chunk
+      now <<- Sys.time()
+    } else {
+      # calculate the time difference after a chunk
+      res <- difftime(Sys.time(), now, units = "mins")
+      # return a character string to show the time
+      all_times[[options$label]] <<- res
+    }
+  }
+})
+)
+
+knitr::opts_chunk$set(
+  # don't use, has issues with a lot of symbols
+  # https://yihui.org/formatr/
+  # tidy = TRUE,
+  # cache.lazy = FALSE#,   # otherwise you get "Error in `lazyLoadDBinsertVariable()`: ! long vectors not supported yet: connections.c:6093"
+  time_it = TRUE
+)
+
+#to crop the empty white space around the pdf plots
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+
+# Load libraries
+
+```{r}
+#| label: libraries_funct
+
+
+x <- c("tidyverse", "magrittr", "Seurat",
+       "scDblFinder", "ggbreak", "ggridges",
+       "scater"#, "BiocParallel"
+       )
+
+#if (!"BiocManager" %in% installed.packages())
+#  install.packages("BiocManager")
+#BiocManager::install(x)
+
+## Load libraries
+invisible(lapply(x, library, character.only = TRUE))
+
+source("../functions/helper_functions.R")
+
+set.seed(42)
+
+## testing
+tstamp <- format(Sys.time(), '%Y-%m-%d-%H%M')
+
+start_time <- Sys.time()
+start_time
+```
+
+Proof of principle, quickly analyzing the datasets with no soupX. This script only explores the quality of the data and filters outliers.
+
+## loc
+
+```{r}
+#| label: paths_loc_output_dir
+
+step_dir <- paste0("../../p2_results/")
+necessary_dirs <- c("00_objects/", "01_preproc_qc_seurat_tests/")
+output_dirs <- fh4.create_subdirs(step_dir, necessary_dirs)
+
+in_cellranger_counts_multiple_obj <- "../../data/internal/cellranger_count/"
+in_metadata <- "../../annotations/2_export/2025.10.26_public_scrnaseq_data.csv"
+```
+
+## hb
+
+```{r}
+#| label: paths_hb_output_dir
+
+## Set up output dirs
+# step_dir <- "/gpfs/project/projects/MedRheuma/balmir/projects/p2_scrnaseq_natlas_ssc/"
+# necessary_dirs <- c("p2_results/00_objects/", "p2_results/01_preproc_qc_seurat_tests/")
+# output_dirs <- fh4.create_subdirs(step_dir, necessary_dirs)
+# in_cellranger_counts_multiple_obj <- ${step_dir}"/data/internal/cellranger_count/"
+```
+
+
+
+```{r}
+#| label: data_location
+
+samples <- dir(path = in_cellranger_counts_multiple_obj, 
+               recursive = T, 
+               pattern = "filtered_feature_bc_matrix")
+samples
+
+#id_samples <- gsub("/.*", "", samples)
+id_samples <- sub("^([^/]*/[^/]*)/.*", "\\1", samples) %>% 
+  gsub("/", "_", .)
+id_samples
+
+## load metadata
+meta <- read_csv(in_metadata,
+                 col_names = T,
+                 trim_ws = T)
+head(meta)
+```
+
+
+# Preprocessing  
+  
+## Load h5 objects and remove ambient RNA with SoupX
+
+```{r}
+#| label: run_soupX
+
+# obj_list <- lapply(samples, function(i){
+#   id <- gsub('-filtered_feature_bc_matrix.h5', '', i)
+#   toc <- Read10X_h5(paste0(PATH, '/', 'filtered_count_tables_h5/', i))
+#   tod <- Read10X_h5(paste0(PATH, '/', 'raw_count_tables_h5/', id, '-raw_feature_bc_matrix.h5'))
+#   toc <- as(toc, 'sparseMatrix')
+#   tod <- as(tod, 'sparseMatrix')[rownames(toc),]
+#   
+#   tmp <- CreateSeuratObject(toc)
+#   tmp <- NormalizeData(tmp, verbose = F) %>% FindVariableFeatures(verbose = F) %>% ScaleData(verbose = F) %>% 
+#     RunPCA(verbose = F) %>% FindNeighbors(dims = 1:10, verbose = F) %>% FindClusters(resolution = 1, verbose = F)
+#  
+#   sc <- SoupChannel(tod, toc, calcSoupProfile = FALSE)
+#   soupProf <- data.frame(row.names = rownames(toc),
+#                          est = rowSums(toc)/sum(toc),
+#                          counts = rowSums(toc))
+#   sc <- setSoupProfile(sc, soupProf)
+#   sc <- setClusters(sc, tmp$seurat_clusters)
+#   sc <- autoEstCont(sc, doPlot = FALSE, verbose = F)
+#   mat <- adjustCounts(sc, roundToInt = TRUE, verbose = T)
+#   obj <- CreateSeuratObject(counts = toc, project = id)
+#   obj[['SoupX']] <- CreateAssay5Object(counts = mat)
+#   
+#   rm(toc, tod, id, tmp, sc, mat)
+#   gc()
+#   
+#   return(obj)
+# })
+# 
+# obj <- Reduce(function(x, y) merge(x, y), obj_list)
+# obj <- JoinLayers(obj)
+# 
+# 
+# rm(obj_list, samples)
+# gc()
+# 
+# DefaultAssay(obj) <- 'SoupX'
+# obj <- JoinLayers(obj)
+# obj <- UpdateSeuratObject(obj)
+```
+
+## explore unfiltered objects
+
+```{r}
+#|label: load_h5_files
+
+fc1.load_sc <- function(h5_path, obj, obj_name) {
+  ## create seurat object
+  mx.sparse <- Read10X_h5(paste0(h5_path, obj),
+             use.names = T,
+             unique.features = T)
+
+  seu_obj <- CreateSeuratObject(counts = mx.sparse,
+                                project = obj_name,
+                                assay = "RNA",
+                                min.cells = 3,      ## features detected in at least this many cells
+                                min.features = 200) ## cells where at least this many features are detected
+
+  cat("\nprint object dimensions: ")  
+  seu_obj@meta.data %>% dim() %>% print()
+  
+    ## Add the mitochondrial content
+  # rownames(seu_merge_unfilt)[grepl("^MT-", rownames(seu_merge_unfilt))]
+  seu_obj[["percent.mt"]] <- PercentageFeatureSet(seu_obj,
+                                                  pattern = "^MT-")
+  ## Add short name
+  seu_obj@meta.data <- seu_obj@meta.data %>% 
+    mutate(abrev_name = gsub(".*_", "", orig.ident) )
+
+  ## Make some obj columns factorial - helps with plotting
+  fact_cols <- c("orig.ident", "abrev_name")
+  seu_obj[[fact_cols]] <- lapply(seu_obj[[fact_cols]], factor)
+
+
+  return(seu_obj)
+
+  }
+
+seu_obj_list <- lapply(1:length(samples),
+                      function(x) fc1.load_sc(h5_path = in_cellranger_counts_multiple_obj,
+                                              obj = samples[x],
+                                              obj_name = id_samples[x] ))
+```
+
+
+```{r}
+#|label: arrange_data
+
+seu_merge_unfilt <- merge(x=seu_obj_list[[1]], 
+                   y=c(seu_obj_list[2:75]), 
+                   add.cell.ids = seq(1, length(seu_obj_list)), 
+                   project="p2_natlas")
+rm(seu_obj_list)
+gc()
+
+
+seu_merge_unfilt <- JoinLayers(seu_merge_unfilt)
+
+## add columns from metadata
+seu_merge_unfilt@meta.data <- inner_join(seu_merge_unfilt@meta.data,
+                                              meta, 
+                                              by = c("abrev_name" = "sample_id")) 
+
+## Make some obj columns factorial - helps with plotting
+fact_cols <- c("orig.ident", "abrev_name", "sample_accession", "dataset", "pubmed_id", "skin_compartment", "singlecell_method", "patient_id", "sex", "indication", "biopsy_site", "nr_samples_in_dataset", "ref")
+
+seu_merge_unfilt[[fact_cols]] <- lapply(seu_merge_unfilt[[fact_cols]], factor)
+
+head(seu_merge_unfilt)
+
+## get levels of all factorial columns
+seu_merge_unfilt@meta.data <- seu_merge_unfilt@meta.data %>% 
+  mutate(across(where(is.factor), droplevels ) )
+
+## get levels of all factorial columns
+seu_merge_unfilt@meta.data %>%
+    select(where(is.factor)) %>%
+    sapply(levels)
+```
+
+## unfiltered plots
+
+
+```{r}
+#| label: vlnPlots_unfiltered
+
+p <- VlnPlot(seu_merge_unfilt,
+             assay = "RNA",
+             layer = 'counts',
+             features = "nFeature_RNA",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "01_",
+                           "VlnPlot_nFeatures_unfilt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+
+
+p <- VlnPlot(seu_merge_unfilt,
+             assay = "RNA",
+             #layer = 'counts',
+             features = "nCount_RNA",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "01_",
+                           "VlnPlot_nCounts_unfilt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+
+
+
+p <- VlnPlot(seu_merge_unfilt,
+             assay = "RNA",
+             layer = 'counts',
+             features = "percent.mt",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "01_",
+                           "VlnPlot_mt_unfilt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+```
+
+
+### cell count
+
+```{r}
+#|label: explore_data
+
+## Cells sequenced per sample
+table(seu_merge_unfilt@meta.data$abrev_name)
+
+## get counts before filtering
+cell_counts_unfilt <- seu_merge_unfilt@meta.data %>%
+  group_by(abrev_name) %>%
+  dplyr::count(abrev_name, name = "cell_count_unfilt") %>%
+  ungroup() 
+
+## split barcharts
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = abrev_name)) +
+  geom_bar() +
+  ggbreak::scale_y_break(breaks=c(12000, 30000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5)) +
+  ggtitle("Number of sequenced cells") +
+  geom_hline(data = cell_counts_unfilt,
+             aes(yintercept = min(cell_count_unfilt) ),
+             linetype="dashed",
+             color = "black"#,
+             #size=2
+             )
+ ggsave(filename = paste0(output_dirs[2],
+                            "02_cell_counts_unfilt_per_sample_",
+                            tstamp,
+                            ".png"),
+          plot = p,
+          height = 7,
+          width = 20)
+```
+
+
+
+### nCount
+
+```{r}
+#| label: nCount_unfilt
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  coord_cartesian(xlim = c(100, 200000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#,
+        #axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5)
+        #legend.position="none"
+        ) +
+  guides(fill=guide_legend(ncol=8)) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+
+ggsave(filename = paste0(output_dirs[2], "03_histogram_nCount_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        #axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+        legend.position="none") +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "03_ridgeplot_nCount_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 20,  #16
+       width = 10)   #16
+```
+
+
+### nFeature
+
+```{r}
+#| label: nFeature_unfilt
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#,
+        #axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5)
+        ) +
+  guides(fill=guide_legend(ncol=8)) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "04_histogram_nFeature_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+
+p <- seu_merge_unfilt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        #axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+        legend.position="none") +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "04_ridgeplot_nFeature_unfilt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 20,
+       width = 10)
+```
+
+
+### complexity
+
+```{r}
+#| label: sample_complexity
+
+seu_merge_unfilt[["log10GenesPerUMI"]] <- log10(seu_merge_unfilt$nFeature_RNA) / log10(seu_merge_unfilt$nCount_RNA)
+
+p <- VlnPlot(seu_merge_unfilt,
+             assay = "RNA",
+             layer = 'counts',
+             features = "log10GenesPerUMI",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  geom_hline(yintercept = .75, color = 'red3')
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(outdir,
+                           "05_",
+                           "VlnPlot_sampleComplexity_unfilt_",
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+```
+
+
+
+
+
+## filter
+  
+Criteria:  
+- `nCount` < 50000. 
+- `percent.mt` < 20. 
+- `nFeature` > 250. 
+- complexity `log10GenesPerUMI` > 0.75. 
+
+
+```{r qc}
+#|label: filter
+
+# Size of objects before filtering
+print(paste0("pre-filter: ", dim(seu_merge_unfilt)[1], " genes/features & ", dim(seu_merge_unfilt)[2], " cells"))
+
+seu_merge_filt <- subset(seu_merge_unfilt, 
+                         subset = #(nCount_RNA < 50000) &
+                           (nFeature_RNA >= 200))# &
+                           #(log10GenesPerUMI > 0.75) &
+                           #(percent.mt < 20))
+
+
+# Size of objects after first filtering
+print(paste0("post-filt1: ", dim(seu_merge_filt)[1], " genes/features & ", dim(seu_merge_filt)[2], " cells"))
+
+rm(seu_merge_unfilt)
+gc()
+```
+
+
+## filtered plots
+
+```{r}
+#|label: vlnPlots_filtered
+
+p <- VlnPlot(seu_merge_filt,
+             assay = "RNA",
+             #layer = 'counts',
+             features = "nFeature_RNA",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "06_",
+                           "VlnPlot_nFeatures_filt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+
+
+p <- VlnPlot(seu_merge_filt,
+             assay = "RNA",
+             #layer = 'counts',
+             features = "nCount_RNA",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "06_",
+                           "VlnPlot_nCounts_filt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+
+
+
+p <- VlnPlot(seu_merge_filt,
+             assay = "RNA",
+             #layer = 'counts',
+             features = "percent.mt",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle,
+    theme = theme(#axis.title.x = element_blank(),
+                  axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+                  plot.title = element_text(size=16, hjust = 0.5),
+                  plot.subtitle = element_text(hjust = 0.5))  )
+
+ggsave(filename = paste0(c(outdir,
+                           "06_",
+                           "VlnPlot_mt_filt_"),
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+```
+
+
+### cell count
+
+```{r}
+#|label: explore_data_filt
+
+## Cells sequenced per sample
+table(seu_merge_filt@meta.data$abrev_name)
+
+## get counts before filtering
+cell_counts_filt <- seu_merge_filt@meta.data %>%
+  group_by(abrev_name) %>%
+  dplyr::count(abrev_name, name = "cell_count_filt") %>%
+  ungroup() 
+
+
+## split barcharts
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = abrev_name)) +
+  geom_bar() +
+  ggbreak::scale_y_break(breaks=c(12000, 30000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(angle = 23)) +
+  ggtitle("Number of sequenced cells") +
+  geom_hline(data = cell_counts_filt,
+             aes(yintercept = min(cell_count_filt) ),
+             linetype="dashed",
+             color = "black"#,
+             #size=2
+             )
+ ggsave(filename = paste0(output_dirs[2],
+                            "07_cell_counts_per_sample_",
+                            tstamp,
+                            ".png"),
+          plot = p,
+          height = 7,
+          width = 20)
+ 
+qc_filter <- inner_join(cell_counts_unfilt, cell_counts_filt, 
+                        by = c("abrev_name")) %>%
+  mutate(filtered_out = cell_count_unfilt - cell_count_filt,
+         percent.lost_cells = (100 * (filtered_out)/ cell_count_unfilt) %>% round(2))
+
+qc_filter
+```
+
+
+
+### nCount
+
+```{r}
+#| label: nCount_filt
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  coord_cartesian(xlim = c(100, 200000)) +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+
+ggsave(filename = paste0(output_dirs[2], "08_histogram_nCount_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nCount_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 500, linetype = "dotdash", color ="grey") +
+  annotate(geom = "text", label = "500", x=500, y=-0.6, hjust = -0.2, size = 3) +
+
+  geom_vline(xintercept = 50000, colour = 'red3') +
+  annotate(geom = "text", label = "50.000", x=50000, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nUMIs/nCount per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of sequenced molecules per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "08_ridgeplot_nCount_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### nFeature
+
+```{r}
+#| label: nFeature_filt
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, color = abrev_name, fill = abrev_name)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5)#, 
+        #legend.position="none"
+        ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], "09_histogram_nFeature_filt_", tstamp, ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 8,
+       width = 16)
+
+
+p <- seu_merge_filt@meta.data %>%
+  ggplot(aes(x = nFeature_RNA, y = abrev_name, fill = abrev_name)) +
+  geom_density_ridges() +
+  ggpubr::theme_pubclean()+
+  ggpubr::labs_pubr()+
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position="none"
+          ) +
+  geom_vline(xintercept = 200, color ="red") +
+  annotate(geom = "text", label = "200", x=200, y=-0.6, hjust = -0.2, size = 3) +
+  
+  scale_x_log10() +
+  xlab("nGenes (nFeature) per cell") +
+  ylab("Cell density") +
+  labs(title = "Number of genes per cell, log base 10")
+
+ggsave(filename = paste0(output_dirs[2], 
+                         "09_ridgeplot_nFeature_filt_", 
+                         tstamp, 
+                         ".pdf"),
+       plot = p,
+       device = "pdf",
+       height = 16,
+       width = 16)
+```
+
+
+### complexity
+
+```{r}
+#| label: sample_complexity_filt
+
+seu_merge_filt[["log10GenesPerUMI"]] <- log10(seu_merge_filt$nFeature_RNA) / log10(seu_merge_filt$nCount_RNA)
+
+p <- VlnPlot(seu_merge_filt,
+             assay = "RNA",
+             #layer = 'counts',
+             features = "log10GenesPerUMI",
+             group.by = "abrev_name",
+             split.by = "abrev_name",
+             split.plot = T,
+             pt.size = 0,
+             combine = F) +
+  geom_hline(yintercept = .75, color = 'red3') +
+  patchwork::plot_annotation(
+    title = "Overview of metrics for all samples",
+    subtitle = str_subtitle) +
+  theme(legend.position = "bottom",
+        legend.spacing.x = unit(0.1, 'cm'),
+        legend.text = element_text(size=9),
+        legend.key.size = unit(0.2, "cm")) +
+  theme(#axis.title.x = element_blank(),
+    axis.text.x = element_text(angle = 23, hjust = 1, vjust = 0.5),
+    plot.title = element_text(size=16, hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5))
+
+ggsave(filename = paste0(outdir,
+                           "10_",
+                           "VlnPlot_sampleComplexity_filt_",
+                           tstamp,
+                           ".png"),
+                         plot = p, height = 7, width = 20)
+```
+
+
+
+## doublet removal
+  
+```{r scDbl}
+#|label: doublet_removal
+
+sce_dbl <- scDblFinder(SingleCellExperiment(list(counts = seu_merge_filt@assays$RNA$counts)))
+#sce_dbl <- scDblFinder(SingleCellExperiment(list(counts = seu_merge_filt@assays$SoupX$counts)))
+
+seu_merge_filt$scDblFinder_score <- setNames(sce_dbl$scDblFinder.score, colnames(sce_dbl))
+seu_merge_filt$scDblFinder_class <- setNames(sce_dbl$scDblFinder.class, colnames(sce_dbl))
+
+rm(sce_dbl)
+gc()
+
+seu_merge_filt@meta.data %>% 
+  head()
+  
+table(seu_merge_filt$abrev_name, seu_merge_filt$scDblFinder_class)
+
+saveRDS(seu_merge_filt,
+        paste0(output_dirs[1],
+               '01_obj_filtered_nonIntegrated_doubletRemoval_', 
+               tstamp, 
+               '.rds'))
+```
+
+
+# Timing and session information
+
+```{r}
+#| label: save_times
+
+Sys.time() - start_time
+
+t(as.data.frame(all_times))
+```
+
+```{r}
+#| label: sessionInfo
+
+sessionInfo()
+```
+
