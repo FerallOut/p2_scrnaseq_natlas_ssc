@@ -1,0 +1,82 @@
+sample_id	sample_accession	dataset	pubmed_id	skin_compartment	experimental_batch	singlecell_method	patient_id	sex	indication	biopsy_site	mrss	disease_duration_years	immunosuppressant_medication_at_biopsy	nr_samples_in_dataset	ref
+SC1	GSM4115868	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC1	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC4	GSM4115870	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC4	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC18	GSM4115872	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC18	Female	control	forearm	NA	NA	NA	22	Lafyatis
+SC32	GSM4115874	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC32	Female	control	forearm	NA	NA	NA	22	Lafyatis
+SC33	GSM4115875	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC33	Female	control	forearm	NA	NA	NA	22	Lafyatis
+SC34	GSM4115876	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC34	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC50	GSM4115878	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC50	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC68	GSM4115880	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC68	Female	control	forearm	NA	NA	NA	22	Lafyatis
+SC124	GSM4115885	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC124	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC125	GSM4115886	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC125	Male	control	forearm	NA	NA	NA	22	Lafyatis
+SC2	GSM4115869	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC2	Female	SSc	forearm	37	6.48	MTX,MMF	22	Lafyatis
+SC5	GSM4115871	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC5	Female	SSc	forearm	17	4.74	HCQ, MMF	22	Lafyatis
+SC19	GSM4115873	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v1	SC19	Male	SSc	forearm	34	2.67	HCQ,MMF	22	Lafyatis
+SC49	GSM4115877	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC49	Female	SSc	forearm	26	2.26	MMF	22	Lafyatis
+SC60	GSM4115879	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC60	Male	SSc	forearm	34	1.21	None	22	Lafyatis
+SC69	GSM4115881	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC69	Male	SSc	forearm	27	1.5	MMF	22	Lafyatis
+SC70	GSM4115882	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC70	Male	SSc	forearm	17	1.08	D-Pen,MMF	22	Lafyatis
+SC86	GSM4115883	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC86	Female	SSc	forearm	25	0.48	MTX	22	Lafyatis
+SC119	GSM4115884	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC119	Female	SSc	forearm	21	2.52	None	22	Lafyatis
+SC185	GSM4115887	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC185	Female	SSc	forearm	12	3.03	MTX	22	Lafyatis
+SC188	GSM4115888	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC188	Female	SSc	forearm	43	2.25	MMF	22	Lafyatis
+SC189	GSM4115889	GSE138669	34282151	Epidermis and dermis	NA	10x 3’ SingelCell  v2	SC189	Male	SSc	forearm	21	0.83	None	22	Lafyatis
+SCD-1908204	GSM7932779	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-1908204	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-1908205	GSM7932780	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-1908205	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-1909116	GSM7932781	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-1909116	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-404YJ1	GSM7932782	GSE249279	38172207	Epidermis	NA	10x 3’ SingelCell  v3	SCD-404Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-404YJ2	GSM7932783	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-404Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-547YJ1	GSM7932784	GSE249279	38172207	Epidermis	NA	10x 3’ SingelCell  v3	SCD-547Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-547YJ2	GSM7932785	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-547Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-604YJ1	GSM7932786	GSE249279	38172207	Epidermis	NA	10x 3’ SingelCell  v3	SCD-604Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-604YJ2	GSM7932787	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-604Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-925YJ1	GSM7932788	GSE249279	38172207	Epidermis	NA	10x 3’ SingelCell  v3	SCD-925Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-925YJ2	GSM7932789	GSE249279	38172207	Dermis	NA	10x 3’ SingelCell  v3	SCD-925Y	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC159	GSM7932790	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC159	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC160	GSM7932791	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC160	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC163	GSM7932792	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC163	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC164	GSM7932793	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC164	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC169	GSM7932794	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC169	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC184	GSM7932795	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC184	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC202	GSM7932796	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC202	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC212	GSM7932797	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC212	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC224	GSM7932798	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC224	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC226	GSM7932799	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC226	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC229	GSM7932800	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC229	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC230	GSM7932801	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC230	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC237	GSM7932802	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC237	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC240	GSM7932803	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC240	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+SCD-SC247	GSM7932804	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	SCD-SC247	NA	SSc	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR010	GSM7932805	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR010	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR012	GSM7932806	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR012	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR013	GSM7932807	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR013	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR014	GSM7932808	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR014	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR015	GSM7932809	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR015	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR016	GSM7932810	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR016	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR017	GSM7932811	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR017	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR018	GSM7932812	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR018	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR019	GSM7932813	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR019	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR020	GSM7932814	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR020	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR021	GSM7932815	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR021	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+NS-AR022	GSM7932816	GSE249279	38172207	Epidermis and dermis	NA	10x 3’ SingelCell  v3	NS-AR022	NA	control	forearm	NA	NA	NA	38	Gudjonsson
+HC1-67Y-F_scRNA-seq	GSM7518425	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_HC1	Female	control	forearm	NA	NA	NA	6	NA
+HC2-45Y-M_scRNA-seq	GSM7518426	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_HC2	Male	control	forearm	NA	NA	NA	6	NA
+lcSSc-P1-64Y-F_scRNA-seq	GSM7518427	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_P1	Female	SSc	forearm	4	1	None	6	NA
+dcSSc-P2-45Y-M_scRNA-seq	GSM7518428	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_P2	Male	SSc	forearm	15	1	None	6	NA
+lcSSc-P3-Ljx_scRNA-seq	GSM7518429	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_P3	Female	SSc	forearm	NA	NA	None	6	NA
+lcSSc-PFX_scRNA-seq	GSM7518430	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_PFX	Female	SSc	forearm	NA	NA	None	6	NA
+Pt1	GSM8872094	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt1	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt2	GSM8872095	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt2	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt3	GSM8872096	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt3	NA	SSc	forearm	NA	NA	NA	15	Denton
+HC1	GSM8872097	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_HC1	NA	control	forearm	NA	NA	NA	15	Denton
+Pt4	GSM8872098	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt4	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt5	GSM8872099	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt5	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt6	GSM8872100	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt6	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt7	GSM8872101	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt7	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt8	GSM8872102	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt8	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt9	GSM8872103	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt9	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt10	GSM8872104	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt10	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt11	GSM8872105	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt11	NA	SSc	forearm	NA	NA	NA	15	Denton
+Pt12	GSM8872106	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt12	NA	SSc	forearm	NA	NA	NA	15	Denton
+HC2	GSM8872107	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC2	NA	control	forearm	NA	NA	NA	15	Denton
+HC3	GSM8872108	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC3	NA	control	forearm	NA	NA	NA	15	Denton

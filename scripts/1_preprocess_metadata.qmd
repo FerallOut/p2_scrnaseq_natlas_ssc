@@ -110,6 +110,10 @@ SCD-1908204 - GSM7932779 - GSE249279 - 38172207 - Dermis - Gudjonsson
 SCD-1908205 - GSM7932780 - GSE249279 - 38172207 - Dermis - Gudjonsson 
 SCD-1909116 - GSM7932781 - GSE249279 - 38172207 - Dermis - Gudjonsson 
 
+Other 3 need to be merged ->
+
+Save it as tsv otherwise the 'immunosuppresant' column misbehaves.
+
 ```{r}
 #| label: locations
 #| output: false
@@ -142,7 +146,7 @@ colnames(meta) <- colnames(meta) %>%
 ## add paper names
 counts_ref <- meta %>% 
   group_by(dataset) %>% 
-  count(dataset, name = "nr_samples_in_dataset") %>% 
+  dplyr::count(dataset, name = "nr_samples_in_dataset") %>% 
   ungroup() %>% 
   mutate(ref = c("Lafyatis", NA, "Gudjonsson", "Denton"))
 
@@ -159,7 +163,7 @@ head(meta_fin)
 ## make necessary cols factorial
 meta_fin <- meta_fin %>%
   mutate(across(c(dataset, pubmedid, skincompartment, experimentalbatch, singlecellmethod, sex, indication, biopsysite, nr_samples_in_dataset, ref), as.factor)) %>% 
-  rename(pubmed_id = pubmedid, 
+  dplyr::rename(pubmed_id = pubmedid, 
          skin_compartment = skincompartment, 
          experimental_batch = experimentalbatch,
          singlecell_method = singlecellmethod,
@@ -182,10 +186,10 @@ meta_fin %>%
   sapply(levels)
 
 ## export the data
-write.csv(x = meta_fin,
-          file = "../annotations/2_export/2025.10.26_public_scrnaseq_data.csv",
-          quote = F,
-          row.names = F)
+## Save it as tsv otherwise the 'immunosuppresant' column misbehaves
+write_tsv(x = meta_fin,
+          file = "../annotations/2_export/2025.10.26_public_scrnaseq_data.tsv",
+          na = "NA")
 ```
 
 
