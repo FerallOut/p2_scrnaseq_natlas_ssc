@@ -65,18 +65,18 @@ lcSSc-P1-64Y-F_scRNA-seq	GSM7518427	GSE236111	37488975	Epidermis and dermis	NA	B
 dcSSc-P2-45Y-M_scRNA-seq	GSM7518428	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_P2	Male	SSc	forearm	15	1	None	6	NA
 lcSSc-P3-Ljx_scRNA-seq	GSM7518429	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_P3	Female	SSc	forearm	NA	NA	None	6	NA
 lcSSc-PFX_scRNA-seq	GSM7518430	GSE236111	37488975	Epidermis and dermis	NA	BD Rhapsody	236111_PFX	Female	SSc	forearm	NA	NA	None	6	NA
-Pt1	GSM8872094	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt1	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt2	GSM8872095	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt2	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt3	GSM8872096	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt3	NA	SSc	forearm	NA	NA	NA	15	Denton
-HC1	GSM8872097	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_HC1	NA	control	forearm	NA	NA	NA	15	Denton
-Pt4	GSM8872098	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt4	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt5	GSM8872099	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt5	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt6	GSM8872100	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt6	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt7	GSM8872101	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt7	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt8	GSM8872102	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt8	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt9	GSM8872103	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt9	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt10	GSM8872104	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt10	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt11	GSM8872105	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt11	NA	SSc	forearm	NA	NA	NA	15	Denton
-Pt12	GSM8872106	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt12	NA	SSc	forearm	NA	NA	NA	15	Denton
-HC2	GSM8872107	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC2	NA	control	forearm	NA	NA	NA	15	Denton
-HC3	GSM8872108	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC3	NA	control	forearm	NA	NA	NA	15	Denton
+SRR32866670	GSM8872094	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt1	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866669	GSM8872095	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt2	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866667	GSM8872096	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_Pt3	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866666	GSM8872097	GSE292979	40232859	Epidermis and dermis	292979_1	10x 3’ SingelCell  v3.1	292979_HC1	NA	control	forearm	NA	NA	NA	15	Denton
+SRR32866668	GSM8872098	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt4	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866665	GSM8872099	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt5	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866664	GSM8872100	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt6	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866662	GSM8872101	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt7	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866661	GSM8872102	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt8	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866663	GSM8872103	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt9	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866660	GSM8872104	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt10	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866659	GSM8872105	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt11	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866657	GSM8872106	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_Pt12	NA	SSc	forearm	NA	NA	NA	15	Denton
+SRR32866656	GSM8872107	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC2	NA	control	forearm	NA	NA	NA	15	Denton
+SRR32866658	GSM8872108	GSE292979	40232859	Epidermis and dermis	292979_2	10x 3’ SingelCell  v3.1	292979_HC3	NA	control	forearm	NA	NA	NA	15	Denton

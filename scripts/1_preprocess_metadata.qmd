@@ -106,28 +106,39 @@ start_time
 This script exports the metadata from the "ods" format and saves it normalized.
 
 3 patient ids have only dermis samples, not epidermis, unlike all the others: 
-SCD-1908204 - GSM7932779 - GSE249279 - 38172207 - Dermis - Gudjonsson 
-SCD-1908205 - GSM7932780 - GSE249279 - 38172207 - Dermis - Gudjonsson 
-SCD-1909116 - GSM7932781 - GSE249279 - 38172207 - Dermis - Gudjonsson 
+
+- SCD-1908204 - GSM7932779 - GSE249279 - 38172207 - Dermis - Gudjonsson 
+- SCD-1908205 - GSM7932780 - GSE249279 - 38172207 - Dermis - Gudjonsson 
+- SCD-1909116 - GSM7932781 - GSE249279 - 38172207 - Dermis - Gudjonsson 
 
 Other 3 need to be merged ->
+- patient_id dupl
+  - SCD-404Y	2			
+  - SCD-547Y	2			
+  - SCD-604Y	2			
+  - SCD-925Y	2
 
 Save it as tsv otherwise the 'immunosuppresant' column misbehaves.
+
+Merge with metadataDenton to correct for missing naming.
 
 ```{r}
 #| label: locations
 #| output: false
 
 ## input
-in_orig <- "../annotations/1_raw/PublicScRNAseqData.ods"
+#list.files("../annotations/1_raw/")
+in_meta <- "../annotations/1_raw/2025_10_29_PublicScRNAseqData.ods"
 load_sheet = "Sheet1"
+
+in_denton <- "../annotations/1_raw/2025_10_31_SraRunTable.csv"
 ```
 
 
 ```{r}
 #| label: load_file
 
-meta <- readODS::read_ods(in_orig, 
+meta <- readODS::read_ods(in_meta, 
                           sheet = load_sheet,
                           col_names = T,
                           row_names = F,
@@ -135,25 +146,59 @@ meta <- readODS::read_ods(in_orig,
                           as_tibble = F,
                           trim_ws = T,
                           ods_format = "ods",
-                          n_max = 83)
+                          n_max = 83) %>% 
+  rename_with(tolower)
 
 head(meta)
 dim(meta)
-
-colnames(meta) <- colnames(meta) %>%
-  tolower() 
 
 ## add paper names
 counts_ref <- meta %>% 
   group_by(dataset) %>% 
   dplyr::count(dataset, name = "nr_samples_in_dataset") %>% 
   ungroup() %>% 
-  mutate(ref = c("Lafyatis", NA, "Gudjonsson", "Denton"))
+  mutate(ref = c("Lafyatis", NA, "Gudjonsson", "Denton")) %T>% 
+  {head(.) %>% print(.)} 
 
-head(counts_ref)
+meta_ref <- left_join(meta, counts_ref, by="dataset")
+head(meta_ref)
+dim(meta_ref)
+```
 
-meta_fin <- left_join(meta, counts_ref, by="dataset")
-head(meta_fin)
+
+```{r}
+#|label: fix_Denton
+
+## keep the other detasets meta 
+meta_noDenton <- meta_ref %>%
+  ## to keep also the NA rows!!!
+  filter((ref != "Denton") %>% replace_na(TRUE)) %T>%
+  {dim(.) %>% print(.)} %T>% 
+  {head(.) %>% print(.)} 
+
+## fix the metadata for the Denton dataset
+meta_onlyDenton <- meta_ref %>% 
+  filter(ref == "Denton")
+
+meta_dent <- read.csv(in_denton,
+         header = T) %>% 
+  select(c(Run, batch, BioProject, BioSample, disease, Experiment, Library.Name, SRA.Study, tissue)) %>% 
+  rename_with(tolower) %>% 
+  rename_with(~gsub("\\s+|\\.", "_", .)) 
+
+meta_corrDenton <- left_join(meta_onlyDenton, meta_dent, by = c("sampleaccession"="library_name")) %>% 
+  select(colnames(meta_onlyDenton), run) %>% 
+  select(-sampleid) %>% 
+  rename(sampleid = run) %>% 
+  ## move column
+  relocate(sampleid, .before = "sampleaccession") %T>%
+  {dim(.) %>% print(.)} %T>% 
+  {head(.) %>% print(.)}  
+
+## merge the corrected metadata back into main
+meta_fin <- rbind(meta_noDenton, meta_corrDenton) %T>%
+  {dim(.) %>% print(.)} %T>% 
+  {head(.) %>% print(.)} 
 ```
 
 
@@ -173,7 +218,8 @@ meta_fin <- meta_fin %>%
          disease_duration_years = diseaseduration_years,
          sample_id = sampleid,
          immunosuppressant_medication_at_biopsy = immunosuppressantmedicationatbiopsy) %T>%
-  {head(.) %>% print(.)}
+  {dim(.) %>% print(.)} %T>% 
+  {head(.) %>% print(.)} 
 
 
 ## get levels of all factorial columns
@@ -184,6 +230,12 @@ meta_fin <- meta_fin %>%
 meta_fin %>%
   select(where(is.factor)) %>%
   sapply(levels)
+
+## any duplicated values?
+lapply(colnames(meta_fin) %>% list(), function(x) meta_fin %>%
+         group_by(patient_id) %>%
+         filter(n() > 1) %>%
+         summarize(n = n()) ) 
 
 ## export the data
 ## Save it as tsv otherwise the 'immunosuppresant' column misbehaves
